@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment{
-        SONAR_HOME= tool "Sonar"
+        SONAR_HOME= tool "sonar"
     }
     stages{
         stage("Clone Code from GitHub"){
@@ -11,7 +11,7 @@ pipeline{
         }
         stage("SonarQube Quality Analysis"){
             steps{
-                withSonarQubeEnv("Sonar"){
+                withSonarQubeEnv("sonar"){
                     sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
                 }
             }
@@ -36,7 +36,7 @@ pipeline{
         }
         stage("Deploy using Docker compose"){
             steps{
-                sh "docker-compose up -d"
+                sh "docker compose up -d"
             }
         }
     }
