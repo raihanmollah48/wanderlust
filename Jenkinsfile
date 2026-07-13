@@ -7,12 +7,13 @@ pipeline{
         stage("Clone Code from GitHub"){
             steps{
                 git url: "https://github.com/raihanmollah48/wanderlust.git", branch: "devops"
+                sh "git clean -fdx"
             }
         }
         stage("SonarQube Quality Analysis"){
             steps{
                 withSonarQubeEnv("sonar"){
-                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust -Dsonar.exclusions=**/node_modules/**,**/*.xml"
                 }
             }
         }
