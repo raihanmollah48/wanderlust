@@ -7,11 +7,8 @@ WORKDIR /app
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Install dependencies with retry config for flaky networks
-RUN npm config set fetch-retries 5 && \
-    npm config set fetch-retry-mintimeout 20000 && \
-    npm config set fetch-retry-maxtimeout 120000 && \
-    npm ci
+# Copy pre-installed node_modules (from CI pipeline) or empty if not pre-installed
+COPY node_modules ./
 
 # code
 COPY . .

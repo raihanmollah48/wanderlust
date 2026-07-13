@@ -34,9 +34,14 @@ pipeline{
                 sh "trivy fs --format  table -o trivy-fs-report.html ."
             }
         }
+        stage("Install npm dependencies"){
+            steps{
+                sh "cd frontend && npm ci && cd ../backend && npm ci"
+            }
+        }
         stage("Deploy using Docker compose"){
             steps{
-                sh "docker compose up -d"
+                sh "docker compose up -d --build"
             }
         }
     }
