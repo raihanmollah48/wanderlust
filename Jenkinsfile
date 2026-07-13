@@ -16,6 +16,11 @@ pipeline{
                 }
             }
         }
+        stage("Install npm dependencies"){
+            steps{
+                sh "cd frontend && npm ci && cd ../backend && npm ci"
+            }
+        }
         stage("OWASP Dependency Check"){
             steps{
                 dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dc'
@@ -24,7 +29,7 @@ pipeline{
         }
         stage("Sonar Quality Gate Scan"){
             steps{
-                timeout(time: 2, unit: "MINUTES"){
+                timeout(time: 5, unit: "MINUTES"){
                     waitForQualityGate abortPipeline: false
                 }
             }
@@ -32,11 +37,6 @@ pipeline{
         stage("Trivy File System Scan"){
             steps{
                 sh "trivy fs --format  table -o trivy-fs-report.html ."
-            }
-        }
-        stage("Install npm dependencies"){
-            steps{
-                sh "cd frontend && npm ci && cd ../backend && npm ci"
             }
         }
         stage("Deploy using Docker compose"){
